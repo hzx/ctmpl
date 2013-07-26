@@ -17,8 +17,8 @@ public:
       std::cout << "bad param: '" << param << "'" << std::endl;
     }
     name.assign(param, delim-&param[0]);
-    /* value.assign(delim+1, &param[strlen(param)]-delim); */
-    value.assign(delim+1);
+    value.assign(delim+1, &param[strlen(param)]-delim);
+    /* value.assign(delim+1); */
   }
 
   std::string name;
@@ -62,7 +62,7 @@ public:
     return NULL;
   }
 
-  const char* renderTmpl(const char *tmpl, ParamVector &params) {
+  void renderTmpl(const char *tmpl, ParamVector &params) {
     std::ifstream itmpl(tmpl);
     std::ostringstream buf;
     buf << itmpl.rdbuf();
@@ -79,7 +79,6 @@ public:
       rtmplSize += i->content.size();
     }
 
-    std::string rtmpl;
     std::string paramName;
     rtmpl.reserve(rtmplSize);
 
@@ -95,7 +94,7 @@ public:
         std::cout << "paramName = " << i->name << std::endl;
         std::cout << "paramValue = " << i->value << std::endl;
         std::cout << "tmplpos: " << std::endl << tmplpos;
-        return NULL;
+        return;
       }
       endPos = strstr(cur, "}}");
       /* endPos = findCloseBraces(cur); */
@@ -103,7 +102,7 @@ public:
         std::cout << "endPos == NULL" << std::endl;
         std::cout << "paramName = " << i->name << std::endl;
         std::cout << "paramValue = " << i->value << std::endl;
-        return NULL;
+        return;
       }
       // copy curr tmpl part and param content
       rtmpl.append(tmplpos, cur-tmplpos);
@@ -118,11 +117,9 @@ public:
       tmplpos = endPos + 2;
     }
     rtmpl.append(tmplpos);
-
-    /* std::cout << rtmpl << std::endl; */
-
-    return rtmpl.c_str();
   }
+
+  std::string rtmpl;
 private:
 };
 
@@ -160,12 +157,13 @@ int main(int argc, char **argv) {
   /* } */
 
   Parser parser;
-  const char *rtmpl = parser.renderTmpl(src, params);
-  if (rtmpl != NULL) {
+  parser.renderTmpl(src, params);
+  if (parser.rtmpl.length() > 0) {
     std::ofstream out(dest);
-    out << rtmpl;
+    out << parser.rtmpl;
+    std::cout << "ctmpl render to: " << dest << std::endl;
   } else {
-    std::cout << "rtmpl is null" << std::endl;
+    std::cout << "rtmpl empty" << std::endl;
   }
 
   return 0;

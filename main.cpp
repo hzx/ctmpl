@@ -17,8 +17,8 @@ public:
       std::cout << "bad param: '" << param << "'" << std::endl;
     }
     name.assign(param, delim-&param[0]);
-    value.assign(delim+1, &param[strlen(param)]-delim);
-    /* value.assign(delim+1); */
+    /* value.assign(delim+1, &param[strlen(param)]-delim); */
+    value.assign(delim+1);
   }
 
   std::string name;
@@ -130,9 +130,9 @@ int main(int argc, char **argv) {
   char *dest = argv[1];
   char *src = argv[2];
 
-  std::cout << "ctmpl: render template" << std::endl;
-  std::cout << "dest: " << dest << std::endl;
-  std::cout << "src: " << src << std::endl;
+  /* std::cout << "ctmpl: render template" << std::endl; */
+  /* std::cout << "dest: " << dest << std::endl; */
+  /* std::cout << "src: " << src << std::endl; */
 
   /* std::cout << "dest = " << dest << std::endl; */
   /* std::cout << "src = " << src << std::endl; */
@@ -161,7 +161,7 @@ int main(int argc, char **argv) {
   if (parser.rtmpl.length() > 0) {
     std::ofstream out(dest);
     out << parser.rtmpl;
-    std::cout << "ctmpl render to: " << dest << std::endl;
+    /* std::cout << "ctmpl render to: " << dest << std::endl; */
   } else {
     std::cout << "rtmpl empty" << std::endl;
   }
